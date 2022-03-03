@@ -1,0 +1,4 @@
+\copy reviews from 'database/reviews.csv' delimiter ',' csv header ;
+\copy photos from 'database/reviews_photos.csv' delimiter ',' csv header ;
+\copy characteristics from 'database/characteristics.csv' delimiter ',' csv header ;
+\copy characteristics_reviews from 'database/characteristic_reviews.csv' delimiter ',' csv header ;
