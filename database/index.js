@@ -1,3 +1,16 @@
+const { Pool, Client } = require("pg");
+const PASSWORD = require('./config.js');
+
+const client = new Client({
+  user: 'postgres',
+  host: 'localhost',
+  database: 'reviews',
+  password: PASSWORD,
+  port: 5432,
+})
+
+client.connect();
+
 // const mongoose = require('mongoose');
 
 // let photoSchema = mongoose.Schema({

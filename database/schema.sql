@@ -1,6 +1,6 @@
 DROP DATABASE IF EXISTS reviews;
 CREATE DATABASE reviews;
-\c reviews;
+\c reviews;\c
 DROP TABLE IF EXISTS reviews, photos, characteristics, characteristics_reviews;
 
 CREATE TABLE reviews (
