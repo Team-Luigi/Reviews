@@ -5,25 +5,35 @@ const db = require('/home/joe/hackreactor/Reviews/database');
 module.exports = {
 
   get: function(params, callback) {
-    // console.log('model params', params);
-    const query = 'select * from reviews r where r.product_id = $1 order by r.id asc';
+    return new Promise((resolve, reject) => {
+      const query = 'select r.id, r.product_id, r.rating, to_timestamp(r.date) as date, r.summary, r.body, r.recommend, reported, r.reviewer_name, r.response, r.helpfulness from reviews r where r.product_id = $1 order by r.id asc';
 
-    db.query(query, params, function(err, results) {
-      callback(err, results);
+      db.query(query, params, function(err, results) {
+        if (err) {
+          console.log(err);
+          reject(err);
+        }
+        resolve(results);
+      });
     });
   },
 
   getPhotos: function(params, callback) {
-    // console.log('model params', params);
-    const query = 'select * from photos p where p.review_id = $1';
-
-    db.query(query, params, function(err, results) {
-      callback(err, results);
+    return new Promise((resolve, reject) => {
+      const query = 'select * from photos p where p.review_id = $1';
+      db.query(query, params, function(err, results) {
+        if (err) {
+          console.log(err);
+          reject(err);
+        }
+        resolve(results);
+      });
     });
   },
 
-  getMeta: function(callback) {
-    const query = '';
+  getMeta: function(params, callback) {
+    console.log(params);
+    const query = `select * from characteristics c where c.product_id = ${params[0]}`;
     db.query(query, function(err, results) {
       callback(err, results);
     });

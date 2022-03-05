@@ -11,7 +11,7 @@ app.use(express.json({extended: true}));
 
 app.get('/api/reviews/:id/', controller.get);
 
-app.get('/api/reviews/meta', controller.getMeta);
+app.get('/api/reviews/meta/:id/', controller.getMeta);
 
 app.post('/api/reviews', controller.post);
 
