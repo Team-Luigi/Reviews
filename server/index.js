@@ -18,3 +18,5 @@ app.post('/api/reviews', controller.post);
 app.listen(PORT, () => {
   console.log(`Server listening on port: ${PORT}`);
 });
+
+module.exports = app;

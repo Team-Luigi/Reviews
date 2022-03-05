@@ -1,7 +1,5 @@
 const db = require('/home/joe/hackreactor/Reviews/database');
-// 'select r.id, r.product_id, r.rating, to_timestamp(r.date), r.summary, r.body, r.recommend, reported, r.reviewer_name, r.reviewer_email, r.response, r.helpfulness, p.review_id as photo_review_id, p.url from reviews r, photos p where r.product_id = $1 and ((r.id = p.review_id) or p.review_id is null);';
 
- // 'select * from reviews r, photos p where r.product_id = $1 and r.id = p.review_id';
 module.exports = {
 
   getReviews: function(params) {
@@ -83,8 +81,21 @@ module.exports = {
     });
   },
 
-  post: function(params, callback) {
-    const query = '';
+  getLastReviewId: function() {
+    return new Promise((resolve, reject) => {
+      const query = 'select r.id from reviews r order by r.id desc fetch first 1 rows only';
+      db.query(query, function(err, results) {
+        if (err) {
+          console.log(err);
+          reject(err);
+        }
+        resolve(results);
+      });
+    });
+  },
+  //TODO: save date
+  saveReview: function(params, callback) {
+    const query = 'insert into reviews(id, product_id, rating, summary, body, recommend, reported reviewer_name, reviewer_email, response, helpfulness) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)';
     db.query(query, params, function(err, results) {
       callback(err, results);
     });
@@ -93,3 +104,9 @@ module.exports = {
 
 
 // const query = 'select r.id, r.product_id, r.rating, to_timestamp(r.date) as date, r.summary, r.body, r.recommend, reported, r.reviewer_name, r.reviewer_email, r.response, r.helpfulness, p.review_id as photo_review_id, p.url from reviews r left join photos p on (r.id = p.review_id) where r.product_id = $1';
+// 'select r.id, r.product_id, r.rating, to_timestamp(r.date), r.summary, r.body, r.recommend, reported, r.reviewer_name, r.reviewer_email, r.response, r.helpfulness, p.review_id as photo_review_id, p.url from reviews r, photos p where r.product_id = $1 and ((r.id = p.review_id) or p.review_id is null);';
+
+ // 'select * from reviews r, photos p where r.product_id = $1 and r.id = p.review_id';
+
+
+ //DELETE a row:

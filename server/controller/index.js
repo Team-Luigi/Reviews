@@ -151,8 +151,14 @@ module.exports = {
     res.send(resultsObj);
   },
 
-  post: function(req, res) {
-    model.post(function(err, results) {
+  post: async function(req, res) {
+    // console.log('req', req.body);
+
+    const lastId = await model.getLastReviewId();
+    console.log(lastId);
+    let params = [(lastId.rows[0].id + 1), req.body["product_id"], req.body.rating, (new Date()) ];
+
+    model.saveReview(params, function(err, results) {
       if (err) {
         console.log('post err', err);
         res.sendStatus(500);
