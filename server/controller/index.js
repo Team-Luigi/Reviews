@@ -4,7 +4,7 @@ module.exports = {
   get: async function(req, res) {
     const params = [req.params.id]; //req.query.page, req.query.count
 
-    const reviews = await model.get(params, function(err, results) {});
+    const reviews = await model.getReviews(params, function(err, results) {});
     const rows = reviews.rows;
       if (rows[0] === undefined) {
         res.send(rows);
@@ -49,16 +49,106 @@ module.exports = {
     res.send(resultsObj);
   },
 
-  getMeta: function(req, res) {
-    const params = [req.params.id]; //req.query.page, req.query.count
-    model.getMeta(params, function(err, results) {
-      if (err) {
-        console.log('getmeta error', err);
-        res.sendStatus(500);
-      } else {
-        res.send(results);
+  getMeta: async function(req, res) {
+    let params = [req.params.id]; //req.query.page, req.query.count
+    const characteristics = await model.getMeta(params, function(err, results) {});
+
+
+    //RATINGS
+    let ratingsObject = {
+      1: 0,
+      2: 0,
+      3: 0,
+      4: 0,
+      5: 0
+    };
+    for (let i = 1; i <= 5; i++ ) {
+      params[1] = i;
+      const getRatings = await model.getRating(params, function(err, results) {});
+      ratingsObject[i] = getRatings.rows[0].count;
+    }
+
+
+    //RECOMMENDED
+    let recommendedObject = {
+      false: 0,
+      true: 0
+    };
+    params = [req.params.id];
+    const getRecommended = await model.getRecommended(params);
+    for (let i = 0; i < getRecommended.rows.length; i++) {
+      if (getRecommended.rows[i].recommend === false) {
+        recommendedObject.false = getRecommended.rows[i].count;
+      } else if (getRecommended.rows[i].recommend === true) {
+        recommendedObject.true = getRecommended.rows[i].count;
       }
-    });
+    }
+
+
+    //CHARACTERISTICS
+    let characteristicSum = {
+      fit: 0,
+      length: 0,
+      comfort: 0,
+      quality: 0,
+      fitId: 0,
+      lengthId: 0,
+      comfortId: 0,
+      qualityId: 0
+    };
+
+    const reviews = await model.getReviews(params, function(err, results) {});
+    let reviewsCount = reviews.rows.length;
+    for (let i = 0; i < reviews.rows.length; i++) {
+      let reviewParams = [reviews.rows[i].id];
+      const getCharReviews = await model.getCharReviews(reviewParams);
+      for (let j = 0; j < getCharReviews.rows.length; j++) {
+        if (getCharReviews.rows[j].name === 'Fit') {
+          characteristicSum.fit += getCharReviews.rows[j].value;
+          characteristicSum.fitId = getCharReviews.rows[j]["characteristic_id"];
+        }
+        if (getCharReviews.rows[j].name === 'Length') {
+          characteristicSum.length += getCharReviews.rows[j].value;
+          characteristicSum.lengthId = getCharReviews.rows[j]["characteristic_id"];
+        }
+        if (getCharReviews.rows[j].name === 'Comfort') {
+          characteristicSum.comfort += getCharReviews.rows[j].value;
+          characteristicSum.comfortId = getCharReviews.rows[j]["characteristic_id"];
+        }
+        if (getCharReviews.rows[j].name === 'Quality') {
+          characteristicSum.quality += getCharReviews.rows[j].value;
+          characteristicSum.qualityId = getCharReviews.rows[j]["characteristic_id"];
+        }
+      }
+    }
+
+    let characteristicsObject = {
+      Fit: {
+        id: characteristicSum.fitId,
+        value: (characteristicSum.fit / reviewsCount)
+      },
+      Length: {
+        id: characteristicSum.lengthId,
+        value: (characteristicSum.length / reviewsCount)
+      },
+      Comfort: {
+        id: characteristicSum.comfortId,
+        value: (characteristicSum.comfort / reviewsCount)
+      },
+      Quality: {
+        id: characteristicSum.qualityId,
+        value: (characteristicSum.quality / reviewsCount)
+      },
+    }
+
+    //FINAL RESULTS OBJECT
+    let resultsObj = {
+      product_id: params[0],
+      ratings: ratingsObject,
+      recommended: recommendedObject,
+      characteristics: characteristicsObject
+    }
+    res.send(resultsObj);
   },
 
   post: function(req, res) {
