@@ -153,10 +153,9 @@ module.exports = {
 
   post: async function(req, res) {
     // console.log('req', req.body);
-
     const lastId = await model.getLastReviewId();
     console.log(lastId);
-    let params = [(lastId.rows[0].id + 1), req.body["product_id"], req.body.rating, (new Date()) ];
+    let params = [(lastId.rows[0].id + 1), req.body["product_id"], req.body.rating, (new Date().getTime()), req.body.summary, req.body.body, req.body.recommend, false, req.body["reviewer_name"], req.body["reviewer_email"], null, 0];
 
     model.saveReview(params, function(err, results) {
       if (err) {
@@ -164,6 +163,29 @@ module.exports = {
         res.sendStatus(500);
       } else {
         res.sendStatus(200);
+      }
+    });
+  },
+
+  putHelpful: function(req, res) {
+    const params = [req.params.review_id];
+    model.markHelpful(params, function(err, results) {
+      if (err) {
+        console.log(err);
+      } else {
+        res.sendStatus(204);
+      }
+    });
+  },
+
+  putReport: function(req, res) {
+    const params = [req.params.review_id];
+    // console.log(params);
+    model.markReported(params, function(err, results) {
+      if (err) {
+        console.log(err);
+      } else {
+        res.sendStatus(204);
       }
     });
   }

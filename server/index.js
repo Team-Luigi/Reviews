@@ -15,6 +15,11 @@ app.get('/api/reviews/meta/:id/', controller.getMeta);
 
 app.post('/api/reviews', controller.post);
 
+app.put('/api/reviews/:review_id/helpful', controller.putHelpful);
+
+app.put('/api/reviews/:review_id/report', controller.putReport);
+
+
 app.listen(PORT, () => {
   console.log(`Server listening on port: ${PORT}`);
 });
