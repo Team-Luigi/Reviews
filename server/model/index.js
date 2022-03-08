@@ -1,11 +1,12 @@
 const db = require('/home/joe/hackreactor/Reviews/database');
 
 module.exports = {
-  //select r.rating, to_timestamp(r.date) as date, r.summary, r.body, r.recommend, reported, r.reviewer_name, r.response, r.helpfulness, r.id, r.product_id, json_agg(p.url) as urls from reviews r left join photos p on r.id = p.review_id where r.id = 5 group by r.id;
+  //'select r.id, r.product_id, r.rating, to_timestamp(r.date) as date, r.summary, r.body, r.recommend, reported, r.reviewer_name, r.response, r.helpfulness from reviews r where r.product_id = $1 order by r.id asc'
+  //select r.rating, to_timestamp(r.date) as date, r.summary, r.body, r.recommend, reported, r.reviewer_name, r.response, r.helpfulness, r.id, r.product_id, json_agg(p.url) as photos from reviews r left join photos p on r.id = p.review_id where r.id = 5 group by r.id;
   //create index concurrently review_id_on_photos on photos(review_id);
   getReviews: function(params) {
     return new Promise((resolve, reject) => {
-      const query = 'select r.id, r.product_id, r.rating, to_timestamp(r.date) as date, r.summary, r.body, r.recommend, reported, r.reviewer_name, r.response, r.helpfulness from reviews r where r.product_id = $1 order by r.id asc';
+      const query = 'select r.rating, to_timestamp(r.date) as date, r.summary, r.body, r.recommend, reported, r.reviewer_name, r.response, r.helpfulness, r.id, r.product_id, json_agg(p.url) as photos from reviews r left join photos p on r.id = p.review_id where r.id = $1 group by r.id';
 
       db.query(query, params, function(err, results) {
         if (err) {
@@ -16,6 +17,13 @@ module.exports = {
       });
     });
   },
+
+  // getReviews: function(params, callback) {
+  //   const query = 'select r.rating, to_timestamp(r.date) as date, r.summary, r.body, r.recommend, reported, r.reviewer_name, r.response, r.helpfulness, r.id, r.product_id, json_agg(p.url) as photos from reviews r left join photos p on r.id = p.review_id where r.id = $1 group by r.id';
+  //   db.query(query, params, function(err, results) {
+  //     callback(err, results);
+  //   });
+  // },
 
   getPhotos: function(params) {
     return new Promise((resolve, reject) => {
