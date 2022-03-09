@@ -2,18 +2,18 @@ const model = require('../model');
 
 module.exports = {
 
-  get: function(req, res) {
-    const params = [req.params.id];
-    model.getReviews(params, function(err, results) {
-      if (err) {
-        console.log(results);
-        res.sendStatus(500);
-      } else {
-        let resultObj = {}
-        res.send(results);
-      }
-    });
-  },
+  // get: function(req, res) {
+  //   const params = [req.params.id];
+  //   model.getReviews(params, function(err, results) {
+  //     if (err) {
+  //       console.log(results);
+  //       res.sendStatus(500);
+  //     } else {
+  //       let resultObj = {}
+  //       res.send(results);
+  //     }
+  //   });
+  // },
   get: async function(req, res) {
     const params = [req.params.id]; //req.query.page, req.query.count
 

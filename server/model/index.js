@@ -1,4 +1,4 @@
-const db = require('/home/joe/hackreactor/Reviews/database');
+const db = require('../database');
 
 module.exports = {
   //'select r.id, r.product_id, r.rating, to_timestamp(r.date) as date, r.summary, r.body, r.recommend, reported, r.reviewer_name, r.response, r.helpfulness from reviews r where r.product_id = $1 order by r.id asc'
