@@ -2,18 +2,6 @@ const model = require('../model');
 
 module.exports = {
 
-  // get: function(req, res) {
-  //   const params = [req.params.id];
-  //   model.getReviews(params, function(err, results) {
-  //     if (err) {
-  //       console.log(results);
-  //       res.sendStatus(500);
-  //     } else {
-  //       let resultObj = {}
-  //       res.send(results);
-  //     }
-  //   });
-  // },
   get: async function(req, res) {
     const params = [req.params.id]; //req.query.page, req.query.count
 
@@ -66,7 +54,6 @@ module.exports = {
     let params = [req.params.id]; //req.query.page, req.query.count
     const characteristics = await model.getMeta(params, function(err, results) {});
 
-
     //RATINGS
     let ratingsObject = {
       1: 0,
@@ -80,7 +67,6 @@ module.exports = {
       const getRatings = await model.getRating(params, function(err, results) {});
       ratingsObject[i] = getRatings.rows[0].count;
     }
-
 
     //RECOMMENDED
     let recommendedObject = {
@@ -96,7 +82,6 @@ module.exports = {
         recommendedObject.true = getRecommended.rows[i].count;
       }
     }
-
 
     //CHARACTERISTICS
     let characteristicSum = {
@@ -202,4 +187,19 @@ module.exports = {
       }
     });
   }
-}
+};
+
+
+
+  // get: function(req, res) {
+  //   const params = [req.params.id];
+  //   model.getReviews(params, function(err, results) {
+  //     if (err) {
+  //       console.log(results);
+  //       res.sendStatus(500);
+  //     } else {
+  //       let resultObj = {}
+  //       res.send(results);
+  //     }
+  //   });
+  // },

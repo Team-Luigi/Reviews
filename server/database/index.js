@@ -1,14 +1,14 @@
 const { Pool } = require("pg");
-const PASSWORD = require('./config.js');
+const { PGPASSWORD, PGUSER, PGDATABASE, PGHOST} = require('./config.js');
+
 const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'reviews',
-  password: PASSWORD,
+  user: PGUSER,
+  host: PGHOST, //change to internal IP
+  database: PGDATABASE,
+  password: PGPASSWORD,
   port: 5432,
 })
 
-// client.connect();
 module.exports = pool;
 
 

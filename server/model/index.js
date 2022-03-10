@@ -1,9 +1,7 @@
 const db = require('../database');
 
 module.exports = {
-  //'select r.id, r.product_id, r.rating, to_timestamp(r.date) as date, r.summary, r.body, r.recommend, reported, r.reviewer_name, r.response, r.helpfulness from reviews r where r.product_id = $1 order by r.id asc'
-  //select r.rating, to_timestamp(r.date) as date, r.summary, r.body, r.recommend, reported, r.reviewer_name, r.response, r.helpfulness, r.id, r.product_id, json_agg(p.url) as photos from reviews r left join photos p on r.id = p.review_id where r.id = 5 group by r.id;
-  //create index concurrently review_id_on_photos on photos(review_id);
+
   getReviews: function(params) {
     return new Promise((resolve, reject) => {
       const query = 'select r.rating, to_timestamp(r.date) as date, r.summary, r.body, r.recommend, reported, r.reviewer_name, r.response, r.helpfulness, r.id, r.product_id, json_agg(p.url) as photos from reviews r left join photos p on r.id = p.review_id where r.id = $1 group by r.id';
@@ -17,13 +15,6 @@ module.exports = {
       });
     });
   },
-
-  // getReviews: function(params, callback) {
-  //   const query = 'select r.rating, to_timestamp(r.date) as date, r.summary, r.body, r.recommend, reported, r.reviewer_name, r.response, r.helpfulness, r.id, r.product_id, json_agg(p.url) as photos from reviews r left join photos p on r.id = p.review_id where r.id = $1 group by r.id';
-  //   db.query(query, params, function(err, results) {
-  //     callback(err, results);
-  //   });
-  // },
 
   getPhotos: function(params) {
     return new Promise((resolve, reject) => {
@@ -52,6 +43,8 @@ module.exports = {
   },
 
   getRating: function(params) {
+    //TODO: Implement this query so it doesn't have to loop through the ratings in controller
+    // select r.rating, count(1) from reviews r where r.product_id = 2 group by r.rating;
     return new Promise((resolve, reject) => {
       const query = 'select count(*) from reviews r where r.product_id =  $1 and r.rating = $2';
       db.query(query, params, function(err, results) {
@@ -131,5 +124,14 @@ module.exports = {
 
  // 'select * from reviews r, photos p where r.product_id = $1 and r.id = p.review_id';
 
-
+//'select r.id, r.product_id, r.rating, to_timestamp(r.date) as date, r.summary, r.body, r.recommend, reported, r.reviewer_name, r.response, r.helpfulness from reviews r where r.product_id = $1 order by r.id asc'
+  //select r.rating, to_timestamp(r.date) as date, r.summary, r.body, r.recommend, reported, r.reviewer_name, r.response, r.helpfulness, r.id, r.product_id, json_agg(p.url) as photos from reviews r left join photos p on r.id = p.review_id where r.id = 5 group by r.id;
+  //create index concurrently review_id_on_photos on photos(review_id);
  //DELETE a row:
+
+  // getReviews: function(params, callback) {
+  //   const query = 'select r.rating, to_timestamp(r.date) as date, r.summary, r.body, r.recommend, reported, r.reviewer_name, r.response, r.helpfulness, r.id, r.product_id, json_agg(p.url) as photos from reviews r left join photos p on r.id = p.review_id where r.id = $1 group by r.id';
+  //   db.query(query, params, function(err, results) {
+  //     callback(err, results);
+  //   });
+  // },

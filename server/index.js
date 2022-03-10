@@ -9,6 +9,10 @@ const PORT = 3000 || process.env.PORT;
 app.use(express.urlencoded({extended: true}));
 app.use(express.json({extended: true}));
 
+app.get('/healthz', function(req, res) {
+  res.sendStatus(200);
+});
+
 app.get('/api/reviews/:id/', controller.get);
 
 app.get('/api/reviews/meta/:id/', controller.getMeta);
